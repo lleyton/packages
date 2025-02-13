@@ -1,15 +1,15 @@
-%global commit dcfd86c70c565c9c1d2f576a9ff0a769f2ef5e49
-%global ver 1.8.36
-%global commit_date 20240219
+%global commit 721300bcb4d0f2114505712f4dc6350af1ce1a09
+%global ver 1.8.45
+%global commit_date 20250212
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
-Name: tdlib-nightly
-Version: %ver^%commit_date.%shortcommit
-Release: 2%?dist
-License: BSL-1.0
-URL: https://github.com/tdlib/td
-Summary: Cross-platform library for building Telegram clients
-Source0: %url/archive/%commit/tdlib-%commit.tar.gz
+Name:          tdlib-nightly
+Version:       %ver^%commit_date.%shortcommit
+Release:       1%?dist
+License:       BSL-1.0
+URL:           https://github.com/tdlib/td
+Summary:       Cross-platform library for building Telegram clients
+Source0:       %url/archive/%commit/tdlib-%commit.tar.gz
 
 BuildRequires: gperftools-devel
 BuildRequires: openssl-devel
@@ -20,7 +20,7 @@ BuildRequires: gperf
 BuildRequires: cmake
 BuildRequires: gcc
 
-Provides: bundled(sqlite) = 3.31.0
+Provides:      bundled(sqlite) = 3.31.0
 
 %description
 TDLib (Telegram Database library) is a cross-platform library for
@@ -62,14 +62,18 @@ sed -e 's/"DEFAULT"/"PROFILE=SYSTEM"/g' -i tdnet/td/net/SslStream.cpp
 %install
 %cmake_install
 
-mv LICENSE_1_0.txt *.md ..
+mv LICENSE_1_0.txt *.md example ..
 rm -rf *
 mv ../LICENSE_1_0.txt ../*.md .
+
+mkdir -p %buildroot%_datadir/%{name}
+cp -r ../example %buildroot%_datadir/%{name}
 
 %files
 %license LICENSE_1_0.txt
 %doc README.md CHANGELOG.md
 %_libdir/libtd*.so.%ver
+%_datadir/%{name}/example/*
 
 %files devel
 %_includedir/td

@@ -2,8 +2,6 @@
 %bcond check 0
 %bcond bootstrap 0
 
-%global debug_package %{nil}
-
 %if %{with bootstrap}
 %global __requires_exclude %{?__requires_exclude:%{__requires_exclude}|}^golang\\(.*\\)$
 %endif
@@ -14,7 +12,7 @@
 
 # https://github.com/abenz1267/walker
 %global goipath         github.com/abenz1267/walker
-Version:                0.11.4
+Version:                0.12.15
 
 %gometa -f
 
@@ -25,7 +23,7 @@ Multi-Purpose Launcher with a lot of features. Highly Customizable and fast.}
 %global godocs          README.md cmd/version.txt
 
 Name:           walker
-Release:        2%?dist
+Release:        1%?dist
 Summary:        Multi-Purpose Launcher with a lot of features. Highly Customizable and fast
 
 License:        MIT
@@ -47,18 +45,19 @@ BuildRequires:  pkgconfig(vips)
 
 %prep
 %goprep -A
-%autopatch -p1
 %go_prep_online
+mv {LICENSE,README.md} cmd
+%setup -T -D -n %{name}-%{version}/cmd
 
 
 %build
-%go_build_online cmd/walker.go
+go build -x -o walker
 
 %install
 #gopkginstall
 %if %{without bootstrap}
-install -m 0755 -vd                         %{buildroot}%{_bindir}
-install -m 0755 -vp build/bin/cmd/walker.go %{buildroot}%{_bindir}/walker
+install -m 0755 -vd        %{buildroot}%{_bindir}
+install -m 0755 -vp walker %{buildroot}%{_bindir}/walker
 %endif
 
 %if %{without bootstrap}

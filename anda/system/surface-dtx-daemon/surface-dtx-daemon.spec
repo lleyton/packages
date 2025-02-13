@@ -1,15 +1,17 @@
 %global debug_package %{nil}
-%global ver 0.3.8-1
+%global ver v0.3.8-1
+%global ver2 %(echo %{ver} | sed 's/^v//')
 
-Name:           surface-dtx-daemon
+Name:           terra-surface-dtx-daemon
 Version:        %(echo %ver | sed 's/-/~/g')
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        Surface Detachment System (DTX) Daemon
 License:        MIT
 URL:            https://github.com/linux-surface/surface-dtx-daemon
-Source:         %url/archive/refs/tags/v%ver.tar.gz
+Source:         %url/archive/refs/tags/%ver.tar.gz
 BuildRequires:  rust cargo dbus-devel anda-srpm-macros cargo-rpm-macros mold
 Packager:       Owen Zimmerman <owen@fyralabs.com>
+Obsoletes:      surface-dtx-daemon < 0.3.8~1-3
 
 %description
 Linux User-Space Detachment System (DTX) Daemon for the Surface ACPI Driver
@@ -17,7 +19,7 @@ Linux User-Space Detachment System (DTX) Daemon for the Surface ACPI Driver
 lack of driver-support on the Surface Book 1. This may change in the future.
 
 %prep
-%autosetup -n %{name}-%{ver}
+%autosetup -n surface-dtx-daemon-%{ver2}
 %cargo_prep_online
 
 %build
@@ -48,6 +50,19 @@ install -D -m644 "target/_surface-dtx-userd" "%{buildroot}/usr/share/zsh/site-fu
 install -D -m644 "target/surface-dtx-daemon.fish" "%{buildroot}/usr/share/fish/vendor_completions.d/surface-dtx-daemon.fish"
 install -D -m644 "target/surface-dtx-userd.fish" "%{buildroot}/usr/share/fish/vendor_completions.d/surface-dtx-userd.fish"
 
+# These systemd services should be included in the preset file for Ultramarine Linux Surface images
+%post
+%systemd_post surface-dtx-daemon.service
+%systemd_user_post surface-dtx-userd.service
+
+%preun
+%systemd_preun surface-dtx-daemon.service
+%systemd_user_preun surface-dtx-userd.service
+
+%postun
+%systemd_postun_with_restart surface-dtx-daemon.service
+%systemd_user_postun_with_restart surface-dtx-userd.service
+
 %files
 %config /etc/dbus-1/system.d/org.surface.dtx.conf
 %config /etc/udev/rules.d/40-surface_dtx.rules
@@ -64,5 +79,8 @@ install -D -m644 "target/surface-dtx-userd.fish" "%{buildroot}/usr/share/fish/ve
 /usr/share/fish/vendor_completions.d/surface-dtx-userd.fish
 
 %changelog
+* Wed Feb 5 2025 Owen Zimmerman <owen@fyralabs.com>
+- rename to terra-surface-dtx-daemon
+
 * Sat Oct 5 2024 Owen Zimmerman <owen@fyralabs.com>
 - Package surface-dtx-daemon

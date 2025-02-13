@@ -1,6 +1,10 @@
+%global commit c830becbff8907809c87dc0949f9a0abd4d77ed6
+%global commit_date 20241102
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
+# Exclude input files from mangling
 %global __brp_mangle_shebangs_exclude_from ^/usr/src/.*$
 
-Name:           stardust-server
+Name:           stardust-xr-server
 Version:        0.45.1
 Release:        1%?dist
 Summary:        Usable Linux display server that reinvents human-computer interaction for all kinds of XR.
@@ -13,7 +17,7 @@ BuildRequires:  glx-utils fontconfig-devel glibc libxcb-devel wayland-devel
 BuildRequires:  openxr-devel libglvnd-devel libglvnd-gles mesa-libgbm-devel
 BuildRequires:  libwayland-egl libX11-devel libXfixes-devel
 BuildRequires:  mesa-libEGL-devel libxkbcommon-devel
-Provides:       stardust-xr-server
+Provides:       stardust-server
 Packager:       Owen Zimmerman <owen@fyralabs.com>
 
 %description

@@ -1,6 +1,6 @@
-%global commit_date 20240824
+%global commit_date 20250123
 
-%global tree_commit b2e69368f96bdf7562dc1a95a0d863c794756842
+%global tree_commit 4647ce2297a7142dabe3cae1de718a69cb370448
 %global tree_shortcommit %(c=%{tree_commit}; echo ${c:0:7})
 
 %global um_commit 46892acafb2fff3f3ace425d4694382c92645feb
@@ -41,17 +41,15 @@ mkdir -p %buildroot%{_unitdir}
 install -Dm644 cros-keyboard-map.service %{buildroot}%{_unitdir}/cros-keyboard-map.service
 chmod +x %buildroot%{_bindir}/um-generate-cros-keymap
 
+# These systemd services should be included in the preset file for Ultramarine Linux Chromebook images
 %post
 %systemd_post cros-keyboard-map.service
-%systemd_post keyd.service
 
 %preun
 %systemd_preun cros-keyboard-map.service
-%systemd_preun keyd.service
 
 %postun
 %systemd_postun_with_restart cros-keyboard-map.service
-%systemd_postun_with_restart keyd.service
 
 %files
 %doc README.md
@@ -61,6 +59,8 @@ chmod +x %buildroot%{_bindir}/um-generate-cros-keymap
 %{_bindir}/um-generate-cros-keymap
 
 %changelog
+* Sat Oct 12 2024 Owen-sz <owen@fyralabs.com>
+- Fix the systemd preset application
 * Sat Aug 24 2024 junefish <june@fyralabs.com>
 - Split off into seperate git repo.
 * Sat May 4 2024 Owen-sz <owen@fyralabs.com>

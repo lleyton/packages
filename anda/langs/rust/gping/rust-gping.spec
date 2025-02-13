@@ -8,7 +8,7 @@
 %global crate gping
 
 Name:           rust-gping
-Version:        1.17.3
+Version:        1.19.0
 Release:        1%?dist
 Summary:        Ping, but with a graph
 
