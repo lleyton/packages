@@ -13,9 +13,10 @@ jobs:
           - frawhide
           - f40
           - f41
+          - f42
           - el10
     container:
-      image: ghcr.io/terrapkg/builder:frawhide
+      image: ghcr.io/terrapkg/builder:f42
       options: --cap-add=SYS_ADMIN --privileged
     steps:
       - name: Checkout
@@ -33,10 +34,7 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Run Update
-        run: |
-          nbranch="${{ matrix.branch }}"
-          [ "$nbranch" = 'frawhide' ] && nbranch='f42'
-          anda update --filters updbranch=1 --labels branch=${{ matrix.branch }},nbranch=$nbranch
+        run: anda update --filters updbranch=1 --labels branch=${{ matrix.branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUST_BACKTRACE: full
